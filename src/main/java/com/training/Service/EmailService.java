@@ -8,5 +8,5 @@ public interface EmailService {
 	void sendEmail(String []to,String sub,String msg);
 	void sendEmailWithHtml(String to,String sub,String htmlContent);
 	void sendEmailWithFile(String to,String sub,String msg,File file);
-	void sendEmailWithFile(String to,String sub,String msg,InputStream inFile);
+	void sendEmailWithFile(String to,String sub,String msg,InputStream inFile, String filePath);
 }

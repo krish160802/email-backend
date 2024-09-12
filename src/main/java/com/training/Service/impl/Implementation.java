@@ -118,36 +118,41 @@ public class Implementation implements EmailService{
 
 
 	@Override
-	public void sendEmailWithFile(String to, String sub, String msg, InputStream inFile) {
-		// TODO Auto-generated method stub
-		
-MimeMessage mimeMessage = mailSender.createMimeMessage();
-		
-		try {
-			
-			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-			
-			helper.setTo(to);
-			helper.setSubject(sub);
-			helper.setText(msg);
-			helper.setFrom("krishkhera16@gmail.com");
-			
-			File file = new File("test.jpg");
-			Files.copy(inFile, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-			FileSystemResource fileSystemResource = new FileSystemResource(file);
-			helper.addAttachment(fileSystemResource.getFilename(), file);
-			
- 			mailSender.send(mimeMessage);
-			logger.info("Email has been sent..");
-		}
-		
-		catch(MessagingException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			throw new RuntimeException(e);
-		}
-		
-	}
+	public void sendEmailWithFile(String to, String sub, String msg, InputStream inFile, String filePath) {
+	    MimeMessage mimeMessage = mailSender.createMimeMessage();
 
+	    try {
+	        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+	        // Set email properties
+	        helper.setTo(to);
+	        helper.setSubject(sub);
+	        helper.setText(msg);
+	        helper.setFrom("krishkhera16@gmail.com");
+
+	        // Create a temporary file at the specified path and copy the InputStream content into it
+	        File file = new File(filePath);  // Use filePath provided by the service parameter
+	        Files.copy(inFile, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+	        // Attach the file to the email
+	        FileSystemResource fileSystemResource = new FileSystemResource(file);
+	        helper.addAttachment(fileSystemResource.getFilename(), fileSystemResource);
+
+	        // Send the email
+	        mailSender.send(mimeMessage);
+	        logger.info("Email has been sent with attachment: " + fileSystemResource.getFilename());
+
+	    } catch (MessagingException | IOException e) {
+	        logger.error("Error while sending email: ", e);
+	        throw new RuntimeException("Error while sending email", e);
+	    } finally {
+	        try {
+	            if (inFile != null) {
+	                inFile.close();  // Close the InputStream
+	            }
+	        } catch (IOException e) {
+	            logger.error("Error while closing input stream: ", e);
+	        }
+	    }
+	}
 }
