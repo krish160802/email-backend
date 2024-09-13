@@ -46,13 +46,13 @@ public class EmailController {
 	    @RequestPart MultipartFile file
 	) {
 	    try {
-	        // Convert MultipartFile to InputStream
+	        
 	        InputStream inFile = file.getInputStream();
 	        
-	        // Specify the temporary file path dynamically
+	        
 	        String filePath = "C:\\Users\\Dell\\Desktop" + file.getOriginalFilename(); // You can define any directory path
 
-	        // Call the service method to send the email with the file
+	        
 	        emailService.sendEmailWithFile(req.getTo(), req.getSub(), req.getMsg(), inFile, filePath);
 
 	        return new ResponseEntity<>("Email Sent", HttpStatus.OK);
