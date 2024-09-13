@@ -2,7 +2,7 @@
 FROM eclipse-temurin:17.0.10_7-jdk AS build
 WORKDIR /app
 COPY . .
-RUN ./mvnw clean package -DskipTests
+RUN chmod +x mvnw && ./mvnw clean package -DskipTests
 
 # Stage 2: Create the runtime image
 FROM almalinux:latest
