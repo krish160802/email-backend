@@ -1,9 +1,9 @@
-FROM maven:3.8.5-openjdk-17 AS build
-WORKDIR /app
-COPY . .
-RUN mvn clean package
-
-FROM openjdk:17
-WORKDIR /app
-COPY --from=build /app/target/myapp.jar /app/myapp.jar
-CMD ["java", "-jar", "/app/myapp.jar"]
+FROM almalinux:latest
+RUN mkdir -p /opt/java/openjdk
+ENV JAVA_HOME=/opt/java/openjdk
+COPY --from=eclipse-temurin:17.0.10_7-jdk $JAVA_HOME $JAVA_HOME
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+COPY ./target/*.jar app.jar
+ENV TZ=Asia/Kolkata
+EXPOSE 8080
+CMD ["java","-jar","app.jar"]
